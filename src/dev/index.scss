@@ -1,0 +1,12 @@
+* {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.storybox-active-story {
+  background-image: url('../../public/mountain_blurred.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}

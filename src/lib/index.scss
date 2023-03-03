@@ -1,0 +1,235 @@
+$accent-background-color: #1a1a1a;
+$window-color: #222222;
+$border-color: rgba(0, 0, 0, 0.1);
+$long-transition: 0.5s ease;
+$min-window-padding: 50;
+$scrollbar-color: #a8a8a8;
+
+@mixin text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin t-caption() {
+  font-weight: 300;
+  font-size: 14px;
+  font-family: UIDisplay, sans-serif;
+}
+
+@mixin t-mono() {
+  font-weight: 500;
+  font-size: 20px;
+  font-family: Menlo, sans-serif;
+}
+
+@mixin flex($justify: flex-start, $align: stretch, $direction: row, $wrap: nowrap) {
+  display: flex;
+  flex-flow: $direction $wrap;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin flex-centered($justify: center, $align: center, $direction: row, $wrap: nowrap) {
+  display: flex;
+  flex-flow: $direction $wrap;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin steady($padding) {
+  max-width: calc(100% - #{$padding * 2}px) !important;
+  max-height: calc(100% - #{$padding * 2}px) !important;
+  transform: translate(var(--draggable-steady-translateX), var(--draggable-steady-translateY)) !important;
+}
+
+body.draggable-inherit-cursor * {
+  cursor: inherit !important;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  background-color: $scrollbar-color;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+.draggable-window {
+  color: white;
+  position: absolute;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid $border-color;
+  transition: background-color $long-transition, backdrop-filter $long-transition,
+  box-shadow $long-transition;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  @include flex($direction: column);
+
+  &--steady {
+    @include steady($min-window-padding);
+  }
+
+  &--focused {
+    box-shadow: 0 0 20px $accent-background-color;
+  }
+
+  &_variant {
+    &--liquid {
+      backdrop-filter: blur(50px);
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    &--solid {
+      background-color: $window-color;
+    }
+  }
+
+  &_panel {
+    height: 25px;
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: background-color$long-transition;
+
+    @include flex-centered($justify: space-between);
+
+    &-title {
+      @include t-caption;
+      @include text-ellipsis;
+      padding-left: 10px;
+    }
+
+    &-icons {
+      @include flex-centered($justify: flex-start);
+      cursor: auto;
+      padding: 0 10px;
+      margin-left: auto;
+    }
+
+    &-icon {
+      width: 12px;
+      height: 12px;
+      user-select: none;
+      border-radius: 50%;
+      cursor: pointer;
+
+      @include t-mono;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+
+      &:not(:last-of-type) {
+        margin-right: 10px;
+      }
+
+      &--disabled {
+        pointer-events: none;
+        opacity: 0.2;
+      }
+
+      &-cross {
+        background-color: firebrick;
+
+        &:hover {
+          background-color: red;
+        }
+      }
+
+      &-minmax {
+        background-color: forestgreen;
+
+        &:hover {
+          background-color: limegreen;
+        }
+      }
+
+      &-collapse {
+        background-color: darkgoldenrod;
+
+        &:hover {
+          background-color: gold;
+        }
+      }
+    }
+  }
+
+  &_children {
+    overflow: auto;
+  }
+
+  &_footer {
+    margin-top: auto;
+  }
+
+  &_resizer {
+    position: absolute;
+    &[data-direction='tl'] {
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 5px;
+      cursor: nwse-resize;
+    }
+    &[data-direction='t'] {
+      top: 0;
+      width: calc(100% - 10px);
+      height: 5px;
+      margin: 0 5px;
+      cursor: ns-resize;
+    }
+    &[data-direction='tr'] {
+      top: 0;
+      right: 0;
+      width: 5px;
+      height: 5px;
+      cursor: nesw-resize;
+    }
+    &[data-direction='r'] {
+      height: calc(100% - 10px);
+      margin: 5px 0;
+      right: 0;
+      width: 2px;
+      cursor: ew-resize;
+    }
+    &[data-direction='rb'] {
+      right: 0;
+      bottom: 0;
+      width: 5px;
+      height: 5px;
+      cursor: nwse-resize;
+    }
+    &[data-direction='b'] {
+      height: 5px;
+      bottom: 0;
+      width: calc(100% - 10px);
+      margin: 0 5px;
+      cursor: ns-resize;
+    }
+    &[data-direction='lb'] {
+      left: 0;
+      bottom: 0;
+      width: 5px;
+      height: 5px;
+      cursor: nesw-resize;
+    }
+    &[data-direction='l'] {
+      left: 0;
+      width: 5px;
+      height: calc(100% - 10px);
+      margin: 5px 0;
+      cursor: ew-resize;
+    }
+    &.draggable-window_resizer--disabled {
+      cursor: default;
+    }
+  }
+}
